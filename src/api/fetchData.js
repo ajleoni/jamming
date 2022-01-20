@@ -1,5 +1,4 @@
 const client_id = '75303dba12f84b6ea9705ce53d1e2bf4';
-const client_secret = '88f60068391d4960a27c7bae26619f1c';
 
 const authOptions = {
   url: 'https://accounts.spotify.com/api/token',
