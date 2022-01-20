@@ -27,13 +27,13 @@ export class App extends react.Component {
   }
   componentDidMount() {
     this.savePlaylist();
+    Spotify.getAccessToken();
   }
   search(searchTerm) {
     console.log(searchTerm);
   }
   savePlaylist() {
     const trackURIs = this.state.playlistTracks.map(track => track.uri);
-    console.log(trackURIs);
   }
   addTrack(track) {
     if (this.state.playlistTracks.find(savedTrack => savedTrack.id === track.id)) {
