@@ -27,7 +27,6 @@ export class App extends react.Component {
   }
   componentDidMount() {
     this.savePlaylist();
-    Spotify.getAccessToken();
   }
   search(searchTerm) {
     console.log(searchTerm);
