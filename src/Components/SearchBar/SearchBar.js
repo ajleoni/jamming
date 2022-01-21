@@ -1,4 +1,5 @@
 import react from 'react';
+import Spotify from '../../util/Spotify';
 import './SearchBar.css';
 
 export class SearchBar extends react.Component {
@@ -9,7 +10,8 @@ export class SearchBar extends react.Component {
     this.handleTermChange = this.handleTermChange.bind(this);
   }
   search() {
-    this.props.onSearch(this.state.searchTerm);
+//    this.props.onSearch(this.state.searchTerm);
+    Spotify.getAccessToken();
   }
   handleTermChange(e) {
     this.setState({searchTerm: e.target.value});
