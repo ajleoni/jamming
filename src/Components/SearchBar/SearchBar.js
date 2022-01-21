@@ -10,8 +10,9 @@ export class SearchBar extends react.Component {
     this.handleTermChange = this.handleTermChange.bind(this);
   }
   search() {
-//    this.props.onSearch(this.state.searchTerm);
-    Spotify.getAccessToken();
+    let accessToken = Spotify.getAccessToken();
+    this.setState({accessToken: accessToken});
+    this.props.onSearch(this.state.searchTerm, accessToken);
   }
   handleTermChange(e) {
     this.setState({searchTerm: e.target.value});

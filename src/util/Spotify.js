@@ -6,32 +6,36 @@ let url='';
 
 class Spotify {
   getAccessToken() {
-    if (accessToken) {return accessToken};
+    if (accessToken) {
+      return accessToken
+    } else
+    {
     url = window.location.href;
     const regEx = /access_token=([^&]*)/;
     const regEx2 = /expires_in=([^&]*)/;
     accessToken = url.match(regEx);
     if (accessToken) {
-        console.log(accessToken);
+        accessToken = accessToken[1];
         expiresIn = url.match(regEx2);
         if (expiresIn) {
-          console.log(expiresIn);
+          expiresIn = expiresIn[1];
           window.setTimeout(() => accessToken = '', expiresIn * 1000);
           window.history.pushState('Access Token', null, '/');
         }
         return accessToken;
-    }     
-    if (!accessToken) {
+    }  else if (!accessToken) {
       url=`https://accounts.spotify.com/authorize?client_id=${client_id}&response_type=token&scope=playlist-modify-public&redirect_uri=${redirectURI}`;
         window.location.href = url;
         console.log(url);
+        console.log('03 Getting Auth Window')
         };  
+      };
   }
-  search(searchTerm) {
+  search(searchTerm, token) {
     const endpoint = `https://api.spotify.com/v1/search?type=track&q=${searchTerm}`;
     const data = {
       method: 'GET',
-      header: {Authorization: 'Bearer ${accessToken}', 'Content-Type': 'application/json'}
+      headers: {Authorization: `Bearer ${token}`, 'Content-Type': 'application/json'}
     }
     const getData = async () => {
       try { 
@@ -41,7 +45,8 @@ class Spotify {
           return jsonResponse;   }
         throw new Error('Request failed!')  }
       catch(error) {console.log(error)} };
-      return getData;
+      let searchResult = getData();
+      return searchResult;
   }
 };
 

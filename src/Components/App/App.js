@@ -28,8 +28,14 @@ export class App extends react.Component {
   componentDidMount() {
     this.savePlaylist();
   }
-  search(searchTerm) {
+  search(searchTerm, accessToken) {
     console.log(searchTerm);
+    console.log(accessToken);
+    const response = Spotify.search(searchTerm, accessToken);
+    response.then( (result) => { 
+      console.log(result);
+      this.setState({response: result}); 
+    } );   
   }
   savePlaylist() {
     const trackURIs = this.state.playlistTracks.map(track => track.uri);
@@ -54,7 +60,7 @@ export class App extends react.Component {
       <div>
         <h1>Ja<span className="highlight">mmm</span>ing</h1>
         <div className="App">
-          <SearchBar /> 
+          <SearchBar onSearch={this.search}/> 
           <div className="App-playlist">
           <SearchResults onAdd={this.addTrack} searchResults={this.state.searchResults}/>
           <Playlist onSave={this.savePlaylist} onNameChange={this.updatePlaylistName} onRemove={this.removeTrack} playlistName={this.state.playlistName} playlistTracks={this.state.playlistTracks} />
