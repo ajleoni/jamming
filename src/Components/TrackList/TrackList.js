@@ -8,7 +8,7 @@ export class TrackList extends react.Component {
         return (
             <div className="TrackList">
                 <p>Tracklist</p>
-                <p>{tracks}</p>
+                <div>{tracks}</div>
             </div>
         );
     }

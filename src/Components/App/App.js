@@ -26,19 +26,31 @@ export class App extends react.Component {
     this.search = this.search.bind(this);
   }
   componentDidMount() {
-    this.savePlaylist();
   }
   search(searchTerm, accessToken) {
     console.log(searchTerm);
     console.log(accessToken);
     const response = Spotify.search(searchTerm, accessToken);
-    response.then( (result) => { 
-      console.log(result);
-      this.setState({response: result}); 
-    } );   
+    response.then( (result) => {
+      const tracks = result.tracks.items.map(
+        (track) => {
+          let object={};
+          object.id = track.id;
+          object.name = track.name;
+          object.artist = track.artists[0].name;
+          object.album = track.album.name;
+          object.uri = track.uri;
+          return object;
+        }
+      )
+      console.log(tracks);
+      this.setState({searchResults: tracks});
+      return tracks;
+     })
   }
   savePlaylist() {
     const trackURIs = this.state.playlistTracks.map(track => track.uri);
+    Spotify.savePlaylist(this.state.playlistName,trackURIs);
   }
   addTrack(track) {
     if (this.state.playlistTracks.find(savedTrack => savedTrack.id === track.id)) {
