@@ -1,33 +1,41 @@
-const client_id = '75303dba12f84b6ea9705ce53d1e2bf4';
-const redirectURI ='http://localhost:3000/';
-let accessToken = '';
-let expiresIn ='';
-let url='';
-
 class Spotify {
+  constructor() {
+    this.client_id = '75303dba12f84b6ea9705ce53d1e2bf4';
+    this.redirectURI = 'http://localhost:3000/';
+//    this.redirectURI = 'https://jam-ajleoni.surge.sh/';
+    this.accessToken= '';
+    this.expiresIn = '';
+    this.url ='';
+    this.playlistId='';
+  }
+  get clientId() {
+    console.log(this.client_id);
+    return this.client_id;
+  }
+  get token() {
+    return this.accessToken;
+  }
   getAccessToken() {
-    if (accessToken) {
-      return accessToken
+    if (this.accessToken) {
+      return this.accessToken
     } else
     {
-    url = window.location.href;
+    this.url = window.location.href;
     const regEx = /access_token=([^&]*)/;
     const regEx2 = /expires_in=([^&]*)/;
-    accessToken = url.match(regEx);
-    if (accessToken) {
-        accessToken = accessToken[1];
-        expiresIn = url.match(regEx2);
-        if (expiresIn) {
-          expiresIn = expiresIn[1];
-          window.setTimeout(() => accessToken = '', expiresIn * 1000);
+    this.accessToken = this.url.match(regEx);
+    if (this.accessToken) {
+        this.accessToken = this.accessToken[1];
+        this.expiresIn = this.url.match(regEx2);
+        if (this.expiresIn) {
+          this.expiresIn = this.expiresIn[1];
+          window.setTimeout(() => this.accessToken = '', this.expiresIn * 1000);
           window.history.pushState('Access Token', null, '/');
         }
-        return accessToken;
-    }  else if (!accessToken) {
-      url=`https://accounts.spotify.com/authorize?client_id=${client_id}&response_type=token&scope=playlist-modify-private,user-read-private,user-read-email&redirect_uri=${redirectURI}`;
-        window.location.href = url;
-        console.log(url);
-        console.log('03 Getting Auth Window')
+        return this.accessToken;
+    }  else if (!this.accessToken) {
+      this.url=`https://accounts.spotify.com/authorize?client_id=${this.client_id}&response_type=token&scope=playlist-modify-private,user-read-private,user-read-email&redirect_uri=${this.redirectURI}`;
+        window.location.href = this.url;
         };  
       };
   }
@@ -49,15 +57,7 @@ class Spotify {
     return searchResult;
   }
   savePlaylist(playlistName,tracks) {
-    if(playlistName && tracks) {
-      let accessToken = this.getAccessToken();
-      const endpoint = 'https://api.spotify.com/v1/me';
-      let data = {
-      method: 'GET',
-      headers: {Authorization: `Bearer ${accessToken}`, 'Content-Type': 'application/json'}
-    }
-      let userId;
-      const queryAPI = async (endpoint,data) => {
+    const queryAPI = async (endpoint,data) => {
       try { 
         const response = await fetch(endpoint, data);
         if (response.ok) { 
@@ -65,7 +65,24 @@ class Spotify {
           return jsonResponse;   }
         throw new Error('Request failed!')  }
       catch(error) {console.log(error)} };
-
+    if (this.playlistId) {
+      let accessToken = this.getAccessToken();
+      let endpoint = `https://api.spotify.com/v1/playlists/${this.playlistId}/tracks`;
+      let data = {
+      method: 'post',
+      headers: {Authorization: `Bearer ${accessToken}`, 'Content-Type': 'application/json'}
+      }
+      data.body = JSON.stringify(tracks);
+      queryAPI(endpoint,data);
+    } else
+    if(playlistName && tracks) {
+      let accessToken = this.getAccessToken();
+      let endpoint = 'https://api.spotify.com/v1/me';
+      let data = {
+      method: 'GET',
+      headers: {Authorization: `Bearer ${accessToken}`, 'Content-Type': 'application/json'}
+    }
+      let userId;
       queryAPI(endpoint,data).then(result => {
         userId = result.id;
         console.log(userId);
@@ -80,12 +97,12 @@ class Spotify {
         queryAPI(endpoint2,data2).then( result => {
           console.log(result);
           let playlistId = result.id;
+          this.playlistId = playlistId;
           return playlistId;
         }).then( (playlistId) => {
           const endpoint3 = `https://api.spotify.com/v1/playlists/${playlistId}/tracks`;
           let data3 = data;
           data3.body = JSON.stringify(tracks); 
-          JSON.stringify()
           queryAPI(endpoint3,data3)
         }
 

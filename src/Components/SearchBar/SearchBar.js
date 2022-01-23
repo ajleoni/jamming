@@ -9,10 +9,6 @@ export class SearchBar extends react.Component {
     this.search = this.search.bind(this);
     this.handleTermChange = this.handleTermChange.bind(this);
   }
-  componentDidMount() {
-    let accessToken = Spotify.getAccessToken();
-    this.setState({accessToken: accessToken});
-  }
   search() {
     let accessToken = Spotify.getAccessToken();
     this.setState({accessToken: accessToken});

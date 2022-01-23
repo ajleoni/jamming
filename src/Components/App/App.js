@@ -10,14 +10,9 @@ export class App extends react.Component {
   constructor(props) {
     super(props);
     this.state = {
-      searchResults: [
-        {name: 'John Bon Jovi', artist:'Jon BJ', album: 'Rocked', id: '1', uri:'spotify:track:6rqhFgbbKwnb9MLmUQDhG6' },
-        {name: 'Like a Virgin', artist:'Madonna', album: 'Immaculated', id:'2', uri:'spotify:track:6rqhFgbbKwnb9MLmUQDhG6'}],
+      searchResults: [],
       playlistName: 'My Playlist',
-      playlistTracks: [
-        {name: 'Stronger', artist:'Britney Spears', album: 'Oops!... I Did It Again', id: '3', uri: 'spotify:track:6rqhFgbbKwnb9MLmUQDhG6' },
-        {name: 'So Emotional', artist:'Whitney Houston', album: 'Whitney', id:'4', uri:'spotify:track:6rqhFgbbKwnb9MLmUQDhG6'},
-        {name: 'It\'s Not Right But It\'s Okay', artist:'Whitney Houston', album: 'My Love Is Your Love', id:'5', uri:'spotify:track:6rqhFgbbKwnb9MLmUQDhG6'}]
+      playlistTracks: []
     }
     this.addTrack = this.addTrack.bind(this);
     this.removeTrack = this.removeTrack.bind(this);
@@ -26,10 +21,10 @@ export class App extends react.Component {
     this.search = this.search.bind(this);
   }
   componentDidMount() {
+    let accessToken = Spotify.getAccessToken();
+    this.setState({accessToken: accessToken});
   }
   search(searchTerm, accessToken) {
-    console.log(searchTerm);
-    console.log(accessToken);
     const response = Spotify.search(searchTerm, accessToken);
     response.then( (result) => {
       const tracks = result.tracks.items.map(
@@ -43,7 +38,6 @@ export class App extends react.Component {
           return object;
         }
       )
-      console.log(tracks);
       this.setState({searchResults: tracks});
       return tracks;
      })
@@ -51,6 +45,8 @@ export class App extends react.Component {
   savePlaylist() {
     const trackURIs = this.state.playlistTracks.map(track => track.uri);
     Spotify.savePlaylist(this.state.playlistName,trackURIs);
+    console.log(Spotify.playlistId);
+    this.setState({playlistId: Spotify.playlistId});
   }
   addTrack(track) {
     if (this.state.playlistTracks.find(savedTrack => savedTrack.id === track.id)) {
