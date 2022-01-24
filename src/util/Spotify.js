@@ -1,8 +1,9 @@
 class Spotify {
   constructor() {
     this.client_id = '75303dba12f84b6ea9705ce53d1e2bf4';
-    this.redirectURI = 'http://localhost:3000/';
+//    this.redirectURI = 'http://localhost:3000/';
 //    this.redirectURI = 'https://jam-ajleoni.surge.sh/';
+    this.redirectURI = 'https://jamming-ajleoni.netlify.app/';
     this.accessToken= '';
     this.expiresIn = '';
     this.url ='';
